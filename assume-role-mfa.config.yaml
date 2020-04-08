@@ -1,0 +1,28 @@
+key_rotator:
+  custom_policies:
+    secretmanager:
+      action:
+        - secretmanager:DescribeSecret
+        - secretmanager:UpdateSecret
+        - secretmanager:PutSecretValue
+      resource:
+        - arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountI}:secret:/${EnvironmentName}/jenkins/mfa/*
+    iam-rotate-keys:
+      action:
+        - iam:CreateAccessKey
+        - iam:DeleteAccessKey
+      resource:
+        - arn:aws:iam:${AWS::AccountId}::user/ciinabox/mfa/*
+  roles:
+    KeyRotator:
+      policies_inline:
+        - cloudwatch-logs
+        - secretmanager
+        - iam-rotate-keys
+  functions:
+    CiinaboxKeyRotator:
+      code: key_rotator
+      handler: app.lambda_handler
+      runtime: python3.8
+      timeout: 30
+      role: KeyRotator

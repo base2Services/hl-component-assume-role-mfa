@@ -1,0 +1,16 @@
+test_metadata:
+  type: config
+  name: default
+  description: deafult list of users
+
+users:
+  - name: test-user-mfa
+    roles:
+      - arn:aws:iam:012345678912::role/mfa
+      - arn:aws:iam:987654321098::role/mfa
+    rotate: 30 # int in days
+    manually_rotate: 1
+  - name: another-user-mfa
+    roles:
+      - arn:aws:iam:012345678912::role/mfa
+      - arn:aws:iam:987654321098::role/mfa

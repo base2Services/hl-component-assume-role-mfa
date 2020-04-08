@@ -66,7 +66,7 @@ CloudFormation do
       ScheduleExpression "rate(#{rotation} days)"
       Targets([
         {
-          RoleArn: FnGetAtt(:CiinaboxKeyRotator, :Arn),
+          Arn: FnGetAtt(:CiinaboxKeyRotator, :Arn),
           Id: "#{resource_name}RotationSchedule",
           Input: payload.to_json
         }

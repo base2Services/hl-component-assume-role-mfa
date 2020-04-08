@@ -12,7 +12,7 @@ key_rotator:
         - iam:CreateAccessKey
         - iam:DeleteAccessKey
       resource:
-        - Fn::Sub: arn:aws:iam:${AWS::AccountId}::user/ciinabox/mfa/*
+        - Fn::Sub: arn:aws:iam::${AWS::AccountId}:user/ciinabox/mfa/*
   roles:
     KeyRotator:
       policies_inline:

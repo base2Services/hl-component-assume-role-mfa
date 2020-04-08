@@ -6,7 +6,7 @@ key_rotator:
         - secretmanager:UpdateSecret
         - secretmanager:PutSecretValue
       resource:
-        - Fn::Sub: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountI}:secret:/${EnvironmentName}/jenkins/mfa/*
+        - Fn::Sub: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:/${EnvironmentName}/jenkins/mfa/*
     iam-rotate-keys:
       action:
         - iam:CreateAccessKey

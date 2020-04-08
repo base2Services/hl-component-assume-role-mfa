@@ -37,7 +37,7 @@ CloudFormation do
     }
     
     IAM_AccessKey("#{resource_name}AccessKey") {
-      UserName user['name']
+      UserName Ref("#{resource_name}User")
       Serial user['manually_rotate'] if user.has_key?('manually_rotate')
     }
     
@@ -56,7 +56,7 @@ CloudFormation do
     rotation = user.has_key?('rotation') ? user['rotation'] : 7
         
     payload = {
-      User: user['name'],
+      User: Ref("#{resource_name}User"),
       SecretId: Ref("#{resource_name}Secret")
     }
     

@@ -175,5 +175,6 @@ def finish_secret(service_client, arn, token):
     # remove the pending key tag
     service_client.untag_resource(SecretId=arn, TagKeys=['ciinabox:iam:pendingkey'])
     # delete old access key
+    iam_client = boto3.client('iam')
     iam_client.delete_access_key(UserName=username, AccessKeyId=access_key_id)
     logger.info(f"finishSecret: Successfully set AWSCURRENT stage to version {token} for secret {arn}.")

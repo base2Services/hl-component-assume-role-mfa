@@ -149,10 +149,10 @@ def finish_secret(service_client, arn, token):
         token (string): The ClientRequestToken associated with the secret version
     """
     # First describe the secret to get the current version
-    metadata = service_client.describe_secret(SecretId=arn)
+    secret = service_client.describe_secret(SecretId=arn)
     current_version = None
-    for version in metadata["VersionIdsToStages"]:
-        if "AWSCURRENT" in metadata["VersionIdsToStages"][version]:
+    for version in secret["VersionIdsToStages"]:
+        if "AWSCURRENT" in secret["VersionIdsToStages"][version]:
             if version == token:
                 # The correct version is already marked as current, return
                 logger.info(f"finishSecret: Version {version} already marked as AWSCURRENT for {arn}")

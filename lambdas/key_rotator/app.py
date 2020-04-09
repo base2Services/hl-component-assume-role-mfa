@@ -116,8 +116,8 @@ def test_secret(service_client, arn, token):
         arn (string): The secret ARN or other identifier
         token (string): The ClientRequestToken associated with the secret version
     """
-    secret = service_client.describe_secret(SecretId=arn, VersionId=token, VersionStage="AWSPENDING")
-    
+    secret = service_client.describe_secret(SecretId=arn)
+        
     # get the user name from the secret tags
     username = next((tag['Value'] for tag in secret['Tags'] if tag['Key'] == 'ciinabox:iam:user'), None)
     if username is None:
@@ -128,7 +128,8 @@ def test_secret(service_client, arn, token):
     if access_key_id is None:
         raise ValueError(f"The secret {arn} is missing the 'ciinabox:iam:pendingkey' tag. It failed to add the tag during the create secret stage.")
     
-    secret_key_id = secret['SecretString']
+    secret_value = service_client.get_secret_value(SecretId=arn, VersionId=token, VersionStage="AWSPENDING")
+    secret_key_id = secret_value['SecretString']
     
     test_client = boto3.client('iam', aws_access_key_id=access_key_id, aws_secret_access_key=secret_key_id)
     try:

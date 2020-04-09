@@ -160,6 +160,10 @@ def finish_secret(service_client, arn, token):
             current_version = version
             break
 
+    username = next((tag['Value'] for tag in secret['Tags'] if tag['Key'] == 'ciinabox:iam:user'), None)
+    if username is None:
+        raise ValueError(f"The secret {arn} is missing the 'ciinabox:iam:user' tag")
+
     access_key_id = next((tag['Value'] for tag in secret['Tags'] if tag['Key'] == 'ciinabox:iam:pendingkey'), None)
     if access_key_id is None:
         raise ValueError(f"The secret {arn} is missing the 'ciinabox:iam:pendingkey' tag. It failed to add the tag during the create secret stage.")
@@ -170,4 +174,6 @@ def finish_secret(service_client, arn, token):
     service_client.tag_resource(SecretId=arn, Tags=[{'Key': 'jenkins:credentials:username','Value': access_key_id}])
     # remove the pending key tag
     service_client.untag_resource(SecretId=arn, TagKeys=['ciinabox:iam:pendingkey'])
+    # delete old access key
+    iam_client.delete_access_key(UserName=username, AccessKeyId=access_key_id)
     logger.info(f"finishSecret: Successfully set AWSCURRENT stage to version {token} for secret {arn}.")

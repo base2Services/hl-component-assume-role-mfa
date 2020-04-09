@@ -88,7 +88,7 @@ def create_secret(service_client, arn, token):
         master_iam_client.delete_access_key(UserName=username, AccessKeyId=existing_access_keys[0]['AccessKeyId'])
     
     # create the new key
-    new_key = iam_client.create_access_key(UserName=user)
+    new_key = iam_client.create_access_key(UserName=username)
     access_key_id = new_key['AccessKey']['AccessKeyId']
     secret_key_id = new_key['AccessKey']['SecretAccessKey']
     

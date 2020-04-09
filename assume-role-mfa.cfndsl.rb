@@ -1,5 +1,11 @@
 CloudFormation do
   
+  iam_policies = external_parameters.fetch(:iam_policies, [])
+  IAM_Role(:LambdaRoleKeyRotator) {
+    AssumeRolePolicyDocument service_assume_role_policy('lambda')
+    Policies iam_role_policies(iam_policies)
+  }
+
   mfa_tags = []
   mfa_tags.push({ Key: 'EnvironmentName', Value: Ref(:EnvironmentName) })
   mfa_tags.push({ Key: 'EnvironmentType', Value: Ref(:EnvironmentType) })
@@ -54,31 +60,13 @@ CloudFormation do
     }
     
     rotation = user.has_key?('rotation') ? user['rotation'] : 7
-        
-    payload = {
-      User: Ref("#{resource_name}User"),
-      SecretId: Ref("#{resource_name}Secret")
-    }
     
-    Events_Rule("#{resource_name}RotationSchedule") {
-      Description "rotate the IAM user access key for #{user['user']} every #{rotation} days"
-      State 'ENABLED'
-      ScheduleExpression "rate(#{rotation} days)"
-      Targets([
-        {
-          Arn: FnGetAtt(:CiinaboxKeyRotator, :Arn),
-          Id: "#{resource_name}RotationSchedule",
-          Input: payload.to_json
-        }
-      ])
-    }
-    
-    Lambda_Permission("#{resource_name}RotationPermissions") {
-      FunctionName FnGetAtt(:CiinaboxKeyRotator, :Arn)
-      Action 'lambda:InvokeFunction'
-      Principal 'events.amazonaws.com'
-      SourceAccount Ref('AWS::AccountId')
-      SourceArn FnGetAtt("#{resource_name}RotationSchedule", :Arn)
+    SecretsManager_RotationSchedule("#{resource_name}SecretRotationSchedule") {
+      SecretId Ref("#{resource_name}Secret")
+      RotationLambdaARN FnGetAtt(:CiinaboxKeyRotator, :Arn)
+      RotationRules({
+        AutomaticallyAfterDays: rotation.to_i
+      })
     }
     
   end

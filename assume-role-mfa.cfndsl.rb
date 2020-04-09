@@ -47,8 +47,8 @@ CloudFormation do
     secret_tags.push({ Key: 'jenkins:credentials:username', Value: Ref("#{resource_name}AccessKey") })
     
     SecretsManager_Secret("#{resource_name}Secret") {
-      Name FnSub("/${EnvironmentName}/jenkins/mfa/#{user['user']}")
-      Description "IAM user access key for #{user['user']}"
+      Name FnSub("/${EnvironmentName}/jenkins/mfa/#{user['name']}")
+      Description "IAM user access key for #{user['name']}"
       SecretString FnGetAtt("#{resource_name}AccessKey", :SecretAccessKey)
       Tags secret_tags
     }

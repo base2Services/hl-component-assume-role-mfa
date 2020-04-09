@@ -85,7 +85,7 @@ def create_secret(service_client, arn, token):
     existing_access_keys = sorted(iam_client.list_access_keys(UserName=username)['AccessKeyMetadata'], key=lambda x: x['CreateDate'])
     if len(existing_access_keys) >= 2:
         logger.info("at least 2 access keys already exist. deleting the oldest version: %s" % existing_access_keys[0]['AccessKeyId'])
-        master_iam_client.delete_access_key(UserName=username, AccessKeyId=existing_access_keys[0]['AccessKeyId'])
+        iam_client.delete_access_key(UserName=username, AccessKeyId=existing_access_keys[0]['AccessKeyId'])
     
     # create the new key
     new_key = iam_client.create_access_key(UserName=username)

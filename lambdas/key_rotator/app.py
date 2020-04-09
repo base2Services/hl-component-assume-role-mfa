@@ -116,7 +116,7 @@ def test_secret(service_client, arn, token):
         arn (string): The secret ARN or other identifier
         token (string): The ClientRequestToken associated with the secret version
     """
-    secret = service_client.describe_secret(SecretId=arn, VersionId=token, VersionStage=stage)
+    secret = service_client.describe_secret(SecretId=arn, VersionId=token, VersionStage="AWSPENDING")
     
     # get the user name from the secret tags
     username = next((tag['Value'] for tag in secret['Tags'] if tag['Key'] == 'ciinabox:iam:user'), None)

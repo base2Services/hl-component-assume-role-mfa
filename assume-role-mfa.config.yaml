@@ -46,6 +46,5 @@ key_rotator:
       runtime: python3.8
       timeout: 30
       role: KeyRotator
-      log_retention: 30
       allowed_sources:
         - principal: secretsmanager.amazonaws.com

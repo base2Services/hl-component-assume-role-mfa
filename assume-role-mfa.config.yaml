@@ -43,7 +43,7 @@ key_rotator:
         Fn::Sub: ${EnvironmentName}-ciinabox-mfa-iam-access-key-rotator
       code: key_rotator
       handler: app.lambda_handler
-      runtime: python3.8
+      runtime: python3.11
       timeout: 30
       role: KeyRotator
       allowed_sources:
